@@ -1,0 +1,25 @@
+---
+- name: Setup hostname and domain
+  become: true
+  tags:
+    - hostname
+    - domain
+    - notest # Can't set hostname in tests
+  block:
+    - name: Set hostname
+      hostname:
+        name: "{{ hostname }}"
+    - name: Configure hostname in /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        regexp: ^127\.0\.1\.1
+        line: "127.0.1.1\t{{ hostname }}"
+        mode: '0644'
+      when: not domain is truthy
+    - name: Configure FQDN in /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        regexp: ^127\.0\.1\.1\\t{{ hostname }}
+        line: "127.0.1.1\t{{ hostname }}.{{ domain }} {{ hostname }}"
+        mode: '0644'
+      when: domain is truthy
