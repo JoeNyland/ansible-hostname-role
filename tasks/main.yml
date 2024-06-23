@@ -19,7 +19,7 @@
     - name: Configure FQDN in /etc/hosts
       lineinfile:
         path: /etc/hosts
-        regexp: ^127\.0\.1\.1\\t{{ hostname }}
+        regexp: ^127\.0\.1\.1
         line: "127.0.1.1\t{{ hostname }}.{{ domain }} {{ hostname }}"
         mode: '0644'
       when: domain is truthy
